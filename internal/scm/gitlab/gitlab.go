@@ -189,12 +189,14 @@ func (g *Gitlab) getProjects(ctx context.Context) ([]*gitlab.Project, error) {
 
 func (g *Gitlab) getGroupProjects(ctx context.Context, groupName string) ([]*gitlab.Project, error) {
 	var allProjects []*gitlab.Project
+	f := false
 	for i := 1; ; i++ {
 		projects, _, err := g.glClient.Groups.ListGroupProjects(groupName, &gitlab.ListGroupProjectsOptions{
 			ListOptions: gitlab.ListOptions{
 				PerPage: 100,
 				Page:    i,
 			},
+			Archived:         &f,
 			IncludeSubgroups: &g.Config.IncludeSubgroups,
 		}, gitlab.WithContext(ctx))
 		if err != nil {
